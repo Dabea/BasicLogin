@@ -1,0 +1,22 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="col-xs-4 col-xs-push-4 ">
+        
+    <div class="panel panel-default" >
+        <div class="panel-heading">
+            <label class="text-center" > <strong >user2 edit </strong></label>
+        </div>
+        <div class="panel-body">
+            {{ form(edit_form) }}
+   
+       
+            <ul class="record_actions">
+                <li>
+                    <a  href="{{ path('main_user2_show', {id: app.user.id}) }}"> Back to User info</a>
+                </li>
+                <li>{{ form(delete_form) }}</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

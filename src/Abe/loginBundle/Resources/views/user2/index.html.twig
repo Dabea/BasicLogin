@@ -1,0 +1,67 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-notice alert alert-danger col-xs-4 col-xs-offset-4   row text-center">
+            {{ flashMessage }}
+        </div>
+        <div>
+        </div>
+        
+        
+    {% endfor %}
+    
+    <div class="col-xs-8 col-xs-push-2 row well">
+        <a class="btn btn-primary btn-xs pull-right" href="{{ path('logout2') }}"> Logout</a> 
+        <a class="btn btn-primary btn-xs " href="{{ path('homepage') }}"> Home Page</a>
+    <h1 class="text-center">user2 list</h1>
+    
+
+    <table class="records_list table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Roles</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr >
+                <td><a href="{{ path('main_user2_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.username }}</td>
+                <td>{{ entity.password }}</td>
+                <td> 
+                    {% for roles in entity.roles %}
+                        <li>
+                        {{ roles.role }}
+                        </li>
+                    {% endfor %}  
+                        
+                </td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('main_user2_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('main_user2_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('main_user2_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    </div>
+    {% endblock %}

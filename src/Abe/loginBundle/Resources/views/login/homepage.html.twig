@@ -1,0 +1,43 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+{% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-notice alert alert-danger col-xs-5 col-xs-offset-4   row text-center">
+            {{ flashMessage }}
+        </div>
+{% endfor %}
+<div class="col-xs-12"></div>
+<div class="col-xs-5 col-xs-offset-4" >
+    <div class="well well-lg">
+        <h1 class="text-center">The Home Page </h1> 
+    </div>
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title text-center"> Hello {{app.user.username}} </h2>
+            </div>
+        <div class="panel-body">
+            <p> You can edit the Sample Data here  <a class="btn btn-success  btn-sm pull-right" href="{{ path('main_users') }}"> Edit</a>  </p>
+            <p> You can edit your of the info here  <a class="btn btn-warning  btn-sm pull-right" href="{{ path('main_user2_show', {id: app.user.id}) }}"> Edit</a>  </p>
+    {% if is_granted('ROLE_ADMIN') %}
+            <p> Since you are an Admin you can change all the users data  <a class="btn btn-danger btn-sm  pull-right" href="{{ path('main_user2') }}"> Edit</a>  </p>
+    {% endif %}
+        </div>
+        </div>
+    {% else %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title text-center">Welcome</h2>
+            </div>
+        <div class="panel-body">
+        <h3> You can edit your info here But you need to log in first</h3>
+        </div>
+        </div>
+    {% endif %}
+    
+    
+
+
+</div>
+{% endblock %}

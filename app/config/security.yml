@@ -1,0 +1,42 @@
+security:
+    encoders:
+        Abe\loginBundle\Entity\user2: bcrypt
+        Symfony\Component\Security\Core\User\User: plaintext
+
+    role_hierarchy:
+        ROLE_ADMIN:       [ROLE_USER, ROLE_GRANT_ADMIN]
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH, ROLE_GRANT_ADMIN, ROLE_GRANT_SADMIN, ROLE_DEMOTE]
+        
+
+    providers:
+        Database:
+            entity:  
+                class: AbeloginBundle:user2
+                property: username 
+    
+        in_memory:
+            memory:
+                users:
+                    user:  { password: userpass, roles: [ 'ROLE_USER' ] }
+                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+
+    firewalls:
+
+        secured_area:
+            pattern:    ^/
+            form_login:
+                check_path: BlackMagic
+                login_path: /login
+                default_target_path: homepage
+            logout:
+                path:   /logout2
+                target: /homepage
+            anonymous: ~
+            #http_basic:
+            #    realm: "Secured Demo Area"
+
+    access_control:
+        - { path: ^/main , roles: ROLE_USER }
+        
+        
+        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }

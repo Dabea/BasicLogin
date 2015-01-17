@@ -1,0 +1,19 @@
+abelogin_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: AbeloginBundle:Default:index }
+
+login:
+    resource: "@AbeloginBundle/Controller/loginController.php"
+    type:     annotation
+
+login_user:
+    resource: "@UserBundle/Controller"
+    type:     annotation
+
+CRUD:
+    resource: "@AbeloginBundle/Controller/UsersController.php"
+    type:     annotation 
+    
+CRUD2:
+    resource: "@AbeloginBundle/Controller/user2Controller.php"
+    type:     annotation 

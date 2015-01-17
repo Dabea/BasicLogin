@@ -1,0 +1,16 @@
+<nav  class="navbar navbar-inverse navbar-fixed-top">
+      
+        <div class="navbar-header col-xs-5 col-xs-push-5">
+          <div>
+          <a  class="navbar-brand" href="{{ path('homepage')}}">Home</a>
+          <a class="navbar-brand" href="#">Projects</a>
+          <a class="navbar-brand" href="#">About</a>
+          </div>
+          {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <a class="btn btn-primary  pull-right" href="{{ path('logout2') }}"> Logout</a>
+          {% else %}
+             <a class="btn btn-default  pull-right" href="{{ path('login') }}"> Login</a> 
+         {% endif %}
+        
+</nav>
+<div style="height:185px"> </div>

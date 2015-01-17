@@ -1,0 +1,4 @@
+abelogin:
+    resource: "@AbeloginBundle/Resources/config/routing.yml"
+    prefix:   /
+
