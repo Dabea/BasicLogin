@@ -105,37 +105,4 @@ class Role implements RoleInterface
     }
     
     
-
-    /**
-     * Add users
-     *
-     * @param \Abe\loginBundle\Entity\user2 $users
-     * @return Role
-     */
-    public function addUser(\Abe\loginBundle\Entity\user2 $users)
-    {
-        $this->users[] = $users;
-    
-        return $this;
-    }
-
-    /**
-     * Remove users
-     *
-     * @param \Abe\loginBundle\Entity\user2 $users
-     */
-    public function removeUser(\Abe\loginBundle\Entity\user2 $users)
-    {
-        $this->users->removeElement($users);
-    }
-
-    /**
-     * Get users
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection 
-     */
-    public function getUsers()
-    {
-        return $this->users;
-    }
 }

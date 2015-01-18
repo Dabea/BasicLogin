@@ -66,11 +66,13 @@ class user2Controller extends Controller
             $data = $form->getData();
             $entity->setUsername($data->getUsername());
             $entity->setPassword($this->encodePassword($entity, $data->getPassword()));
-            //$entityManager = $this->getDoctrine()->getManager();
-            //$defaultRole = $entityManager->getRepository('AbeloginBundle:Role')->find(1);
+            
+            $entityManager = $this->getDoctrine()->getManager();
+            $defaultRole = $entityManager->getRepository('AbeloginBundle:Role')->find(1);
+            $entity->addRole($defaultRole);
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
-            //$em->setRole($defaultRole);
+            //$em->addRole($defaultRole);
             $em->flush();
 
             return $this->redirect($this->generateUrl('main_user2_show', array('id' => $entity->getId())));

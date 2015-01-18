@@ -126,14 +126,11 @@ class user2 implements UserInterface, \Serializable
     {
         $this->roles = new ArrayCollection();
     }
-    /**
-    * get Roles
-    * @param Doctrine\Common\Collections\ArrayCollection
-    */
+    
     public function getRoles()
     {   
         $roles = $this->roles;
-        
+        $roles = array('ROLE_TEST');
 
     
         return $this->roles->toArray();
@@ -156,29 +153,9 @@ public function unserialize($serialized)
                      $this->id) = json_decode(
             $serialized);
 } 
-
+public function addRoles($roles)
+{
+    $this->roles->add(array($roles));
+}
  
-
-    /**
-     * Add roles
-     *
-     * @param \Abe\loginBundle\Entity\Role $roles
-     * @return user2
-     */
-    public function addRole(\Abe\loginBundle\Entity\Role $roles)
-    {
-        $this->roles[] = $roles;
-    
-        return $this;
-    }
-
-    /**
-     * Remove roles
-     *
-     * @param \Abe\loginBundle\Entity\Role $roles
-     */
-    public function removeRole(\Abe\loginBundle\Entity\Role $roles)
-    {
-        $this->roles->removeElement($roles);
-    }
 }
