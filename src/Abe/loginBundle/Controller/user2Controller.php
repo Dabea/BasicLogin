@@ -138,13 +138,16 @@ class user2Controller extends Controller
             throw $this->createNotFoundException('Unable to find user2 entity.');
         }
         $rolecollection = $entity->getRoles();
-       // exit(\Doctrine\Common\Util\Debug::dump($rolecollection));
         $deleteForm = $this->createDeleteForm($id);
+        $grantAdminForm = $this->createGrantAdminForm($id);
+        $removeAdminForm = $this->createRemoveAdminForm($id);
 
         return array(
             'entity'      => $entity,
             'rolecollection'        => $rolecollection,
             'delete_form' => $deleteForm->createView(),
+            'grantAdmin_form' => $grantAdminForm->createView(),
+            'removeAdmin_form' => $removeAdminForm->createView(),
         );
     }
 
@@ -167,11 +170,13 @@ class user2Controller extends Controller
 
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
+        $grantAdminForm = $this->createGrantAdminForm($id);
 
         return array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
+            'grantAdmin_form' => $grantAdminForm->createView(),
         );
     }
 
@@ -213,14 +218,14 @@ class user2Controller extends Controller
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
+        $grantAdminForm = $this->createGrantAdminForm($id);
 
         if ($editForm->isValid()) {
             $data = $editForm->getData();
-            $user = new user2();
-            $user->setUsername($data->getUsername());
-            $user->setPassword($this->encodePassword($user, $data->getPassword()));
+            $entity->setUsername($data->getUsername());
+            $entity->setPassword($this->encodePassword($entity, $data->getPassword()));
             $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
+            $em->persist($entity);
             $em->flush();
 
             return $this->redirect($this->generateUrl('main_user2_edit', array('id' => $id)));
@@ -230,6 +235,7 @@ class user2Controller extends Controller
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
+            'grantAdmin_form' => $grantAdminForm->createView(),
         );
     }
     /**
@@ -295,12 +301,136 @@ class user2Controller extends Controller
     
     public function securityadmin()
     {
-    $securityContext = $this->container->get('security.context');
-    if (!$securityContext->isGranted('ROLE_ADMIN')) {
-        $this->get('session')->getFlashBag()->add('notice', 'Acess Denied You Must be Admin To view that page');
-        return $this->redirect($this->generateUrl('homepage'));
+        $securityContext = $this->container->get('security.context');
+        if (!$securityContext->isGranted('ROLE_ADMIN')) {
+            $this->get('session')->getFlashBag()->add('notice', 'Acess Denied You Must be Admin To view that page');
+            return $this->redirect($this->generateUrl('homepage'));
         
-    }
+        }
+    }    
+    
+   /* public function grantAdmin() 
+    {
+        $securityContext = $this->container->get('security.context');
+        
+        if (!$securityContext->isGranted('ROLE_ADMIN')){
+                $entityManager = $this->getDoctrine()->getManager();
+                $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(2);
+                $entity->addRole($adminRole);
+                
+        }
     
     }
+    */
+     
+    /**
+     * Grants Admin status to a user2 entity.
+     *
+     * @Route("grant/{id}", name="main_user2_grant_admin")
+     * @Method("PUT")
+     */
+    public function grantAdmin(Request $request, $id)
+    {
+        $form = $this->createGrantAdminForm($id);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entity = $entityManager->getRepository('AbeloginBundle:user2')->find($id);
+
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find user2 entity.');
+            }
+            
+            $securityContext = $this->container->get('security.context');
+            if (!$securityContext->isGranted('ROLE_ADMIN')){
+                $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to grant admin status');
+                return $this->redirect($this->generateUrl('homepage'));
+            }
+            else{
+           $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(2);
+           $entity->addRole($adminRole);
+           $em = $this->getDoctrine()->getManager();
+           $em->persist($entity);
+           $em->flush();
+            }
+            
+        }
+
+        return $this->redirect($this->generateUrl('main_user2'));
+    }
+    
+    /**
+     * Creates a form to grant admin status a user2 entity by id.
+     *
+     * @param mixed $id The entity id
+     *
+     * 
+     */
+    private function createGrantAdminForm($id)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('main_user2_grant_admin', array('id' => $id)))
+            ->setMethod('PUT')
+            ->add('submit', 'submit', array('label' => 'Grant Admin'))
+            ->getForm()
+        ;
+    }
+    
+    /**
+     * Removes Admin status to a user2 entity.
+     *
+     * @Route("Remove/{id}", name="main_user2_remove_admin")
+     * @Method("PUT")
+     */
+    public function RemoveAdmin(Request $request, $id)
+    {
+        $form = $this->createRemoveAdminForm($id);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entity = $entityManager->getRepository('AbeloginBundle:user2')->find($id);
+
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find user2 entity.');
+            }
+            
+            $securityContext = $this->container->get('security.context');
+            if (!$securityContext->isGranted('ROLE_ADMIN')){
+                $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to remove admin status');
+                return $this->redirect($this->generateUrl('homepage'));
+            }
+            else{
+           $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(2);
+           $entity->removeRole($adminRole);
+           $em = $this->getDoctrine()->getManager();
+           $em->persist($entity);
+           $em->flush();
+            }
+            
+        }
+
+        return $this->redirect($this->generateUrl('main_user2'));
+    }
+    
+    /**
+     * Creates a form to grant admin status a user2 entity by id.
+     *
+     * @param mixed $id The entity id
+     *
+     * 
+     */
+    private function createRemoveAdminForm($id)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('main_user2_remove_admin', array('id' => $id)))
+            ->setMethod('PUT')
+            ->add('submit', 'submit', array('label' => 'Remove Admin'))
+            ->getForm()
+        ;
+    }
+
+    
+    
 }

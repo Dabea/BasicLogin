@@ -134,7 +134,6 @@ class user2 implements UserInterface, \Serializable
     {   
         $roles = $this->roles;
         
-
     
         return $this->roles->toArray();
     }
