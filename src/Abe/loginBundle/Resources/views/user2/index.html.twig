@@ -4,20 +4,20 @@
     {% for flashMessage in app.session.flashbag.get('notice') %}
         <div class="flash-notice alert alert-danger col-xs-4 col-xs-offset-4   row text-center">
             {{ flashMessage }}
-        </div>
+        </div>S
         <div>
         </div>
         
         
     {% endfor %}
     
-    <div class="col-xs-8 col-xs-push-2 row well">
+    <div style="float: none;  margin-left: auto; margin-right: auto; min-width:900px"  class="col-xs-8   well">
         <a class="btn btn-primary btn-xs pull-right" href="{{ path('logout2') }}"> Logout</a> 
         <a class="btn btn-primary btn-xs " href="{{ path('homepage') }}"> Home Page</a>
     <h1 class="text-center">user2 list</h1>
     
 
-    <table class="records_list table table-striped table-bordered">
+    <table   class="records_list table table-striped table-bordered ">
         <thead>
             <tr>
                 <th>Id</th>

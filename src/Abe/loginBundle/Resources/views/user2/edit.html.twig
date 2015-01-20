@@ -12,11 +12,28 @@
    
        
             <ul class="record_actions">
+                {% if is_granted('ROLE_ADMIN') %}
+                <li>
+                    <a href="{{ path('main_user2') }}">
+                        Back to the list
+                    </a>
+                </li>
+                {% endif %}
                 <li>
                     <a  href="{{ path('main_user2_show', {id: app.user.id}) }}"> Back to User info</a>
                 </li>
                 <li>{{ form(delete_form) }}</li>
-                <li>{{ form(grantAdmin_form) }}</li>
+                {% set admin = '' %}
+                    {% for roles in rolecollection %}
+                       {% if(roles.role == 'ROLE_ADMIN') %}
+                            {% set admin = 'true' %}
+                       {% endif %}
+                    {% endfor %}
+                 {% if admin == true %}
+                    <li>{{ form(removeAdmin_form) }}</li>
+                {% else %}
+                    <li>{{ form(grantAdmin_form) }}</li>
+                {% endif %}
             </ul>
         </div>
     </div>

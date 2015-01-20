@@ -138,4 +138,8 @@ class Role implements RoleInterface
     {
         return $this->users;
     }
+    
+    public  function __toString ( )  { 
+    return  $this->role ;
+ }
 }

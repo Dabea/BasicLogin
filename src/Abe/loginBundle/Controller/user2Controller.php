@@ -30,15 +30,17 @@ class user2Controller extends Controller
     public function indexAction()
     {
         $securityContext = $this->container->get('security.context');
-        if (!$securityContext->isGranted('ROLE_ADMIN')) {
-            $this->get('session')->getFlashBag()->add('notice', 'Acess Denied You Must be Admin To view that page');
-            return $this->redirect($this->generateUrl('homepage'));
-        }
-        $em = $this->getDoctrine()->getManager();
+        if ($securityContext->isGranted('ROLE_TEST') or $securityContext->isGranted('ROLE_ADMIN') ) {
+            $em = $this->getDoctrine()->getManager();
         $entities = $em->getRepository('AbeloginBundle:user2')->findAll();
         return array(
             'entities' => $entities,
-        );
+            );
+        }
+        else {
+        $this->get('session')->getFlashBag()->add('notice', 'Acess Denied You Must be Admin To view that page');
+            return $this->redirect($this->generateUrl('homepage'));
+        }
     }
     /**
      * Creates a new user2 entity.
@@ -53,15 +55,6 @@ class user2Controller extends Controller
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
-      /*  if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('main_user2_show', array('id' => $entity->getId())));
-        }
-        */
-        
         if ($form->isValid()) {
             $data = $form->getData();
             $entity->setUsername($data->getUsername());
@@ -72,7 +65,6 @@ class user2Controller extends Controller
             $entity->addRole($defaultRole);
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
-            //$em->addRole($defaultRole);
             $em->flush();
 
             return $this->redirect($this->generateUrl('main_user2_show', array('id' => $entity->getId())));
@@ -141,13 +133,15 @@ class user2Controller extends Controller
         $deleteForm = $this->createDeleteForm($id);
         $grantAdminForm = $this->createGrantAdminForm($id);
         $removeAdminForm = $this->createRemoveAdminForm($id);
+        $roleForm = $this->createRolesForm($id);
 
         return array(
-            'entity'      => $entity,
-            'rolecollection'        => $rolecollection,
-            'delete_form' => $deleteForm->createView(),
+            'entity'          => $entity,
+            'rolecollection'  => $rolecollection,
+            'delete_form'     => $deleteForm->createView(),
             'grantAdmin_form' => $grantAdminForm->createView(),
-            'removeAdmin_form' => $removeAdminForm->createView(),
+            'removeAdmin_form'=> $removeAdminForm->createView(),
+            'Roles_form'      => $roleForm->createView(),
         );
     }
 
@@ -167,16 +161,19 @@ class user2Controller extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find user2 entity.');
         }
-
+        $rolecollection = $entity->getRoles();
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
         $grantAdminForm = $this->createGrantAdminForm($id);
+        $removeAdminForm = $this->createRemoveAdminForm($id);
 
         return array(
             'entity'      => $entity,
+            'rolecollection'  => $rolecollection,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
             'grantAdmin_form' => $grantAdminForm->createView(),
+            'removeAdmin_form' => $removeAdminForm->createView(),
         );
     }
 
@@ -430,7 +427,73 @@ class user2Controller extends Controller
             ->getForm()
         ;
     }
+    
+    
+    /**
+     * Creates a form to change roles on user2 entity by id.
+     *
+     * @param mixed $id The entity id
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createRolesForm($id)
+    {
+            $entityManager = $this->getDoctrine()->getManager();
+            $roles = $entityManager->getRepository('AbeloginBundle:user2')->find($id);
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('main_user2_roles', array('id' => $id)))
+            ->setMethod('PUT')
+            ->add('Current_Roles', 'entity', array(
+                'class' => 'AbeloginBundle:user2',
+                'choices' => $roles->getRoles(),
+                'expanded' => false,
+                'multiple' => true,
+                'required'    => false,)
+                )
+            ->add('Aviable_Roles', 'entity', array(
+                'class' => 'AbeloginBundle:Role',
+                'choices' => $roles,
+                'expanded' => false,
+                'multiple' => true,
+                'required'    => false,
+                'empty_data'  => null)
+                )                       
+            ->add('submit', 'submit', array('label' => 'Change Roles'))
+            ->getForm()
+        ;
+    }
+    
+    /**
+     * Removes Admin status to a user2 entity.
+     *
+     * @Route("/roles/{id}", name="main_user2_roles")
+     * @Method("GET")
+     * @Template("AbeloginBundle:user2:permissions.html.twig")
+     */
+    public function ChangeRoles(Request $request, $id)
+    {
+        $form = $this->createRolesForm($id);
+        $form->handleRequest($request);
 
+        if ($form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entity = $entityManager->getRepository('AbeloginBundle:user2')->find($id);
+
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find user2 entity.');
+            }
+            
+            $securityContext = $this->container->get('security.context');
+            if (!$securityContext->isGranted('ROLE_ADMIN')){
+                $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to remove admin status');
+                return $this->redirect($this->generateUrl('homepage'));
+            }
+            
+            
+        }
+
+        return $this->redirect($this->generateUrl('main_user2'));
+    }
     
     
 }

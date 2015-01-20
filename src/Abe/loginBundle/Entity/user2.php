@@ -5,12 +5,14 @@ namespace Abe\loginBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * user2
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Abe\loginBundle\Entity\user2Repository")
+ *  @UniqueEntity("username")
  */
 class user2 implements UserInterface, \Serializable
 {
@@ -26,7 +28,7 @@ class user2 implements UserInterface, \Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=255)
+     * @ORM\Column(name="username", type="string", unique=true,  length=255, )
      */
     private $username;
 
@@ -179,5 +181,10 @@ public function unserialize($serialized)
     public function removeRole(\Abe\loginBundle\Entity\Role $roles)
     {
         $this->roles->removeElement($roles);
+    }
+    
+    public function isGranted($role)
+    {
+        return in_array($role, $this->getRoles());
     }
 }

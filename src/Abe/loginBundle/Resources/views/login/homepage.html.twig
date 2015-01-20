@@ -23,6 +23,9 @@
     {% if is_granted('ROLE_ADMIN') %}
             <p> Since you are an Admin you can change all the users data  <a class="btn btn-danger btn-sm  pull-right" href="{{ path('main_user2') }}"> Edit</a>  </p>
     {% endif %}
+    {% if is_granted('ROLE_TEST') %}
+            <p> Since you are an Test user you can view all the users data but depending on your other roles you may not have permissons to change anything  <a class="btn btn-danger btn-sm  pull-right" href="{{ path('main_user2') }}"> Edit</a>  </p>
+    {% endif %}
         </div>
         </div>
     {% else %}
