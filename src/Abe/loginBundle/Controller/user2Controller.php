@@ -218,9 +218,11 @@ class user2Controller extends Controller
 
         if ($editForm->isValid()) {
             $data = $editForm->getData();
-            $pass = $data->getPassword();
+            $plainPassword = $data->getplainPassword();
             $entity->setUsername($data->getUsername());
-            $entity->setPassword($this->encodePassword($entity, $data->getPassword()));
+            if(!empty($plainPassword)){
+            $entity->setPassword($this->encodePassword($entity, $plainPassword));
+            }
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();

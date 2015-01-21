@@ -22,6 +22,7 @@
             <tr>
                 <th>Id</th>
                 <th>Username</th>
+                <th>Email</th>
                 <th>Password</th>
                 <th>Roles</th>
                 <th>Actions</th>
@@ -32,6 +33,7 @@
             <tr >
                 <td><a href="{{ path('main_user2_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
                 <td>{{ entity.username }}</td>
+                <td>{{ entity.email }}</td>
                 <td>{{ entity.password }}</td>
                 <td> 
                     {% for roles in entity.roles %}

@@ -48,10 +48,19 @@ class user2 implements UserInterface, \Serializable
     private $email;
 
     /**
+     * @var string
+     *
+     * //Temporay Place to store the value submitted form the forms
+     */
+    private $plainPassword;
+    
+
+    /**
      * Get id
      *
      * @return integer 
      */
+
     public function getId()
     {
         return $this->id;
@@ -74,7 +83,7 @@ class user2 implements UserInterface, \Serializable
      */
     public function setUsername($username)
     {
-        if(!is_null($password)){
+        if(!is_null($username)){
         $this->username = $username;
         }
         return $this;
@@ -98,9 +107,9 @@ class user2 implements UserInterface, \Serializable
      */
     public function setPassword($password)
     {
-        if(!is_null($password)){
+        
         $this->password = $password;
-        }
+        
         return $this;
     }
 
@@ -112,6 +121,30 @@ class user2 implements UserInterface, \Serializable
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * Set plainpassword
+     *
+     * @return string 
+     * 
+     */
+    public function setplainPassword($plainpassword)
+    {
+        
+        $this->plainpassword = $plainpassword;
+        
+        return $this;
+    }
+
+    /**
+     * Get plainpassword
+     *
+     * @return string 
+     */
+    public function getplainPassword()
+    {
+        return $this->plainPassword;
     }
     
     
@@ -125,7 +158,7 @@ class user2 implements UserInterface, \Serializable
     
     public function eraseCredentials()
     {
-        //
+        $this->setplainPassword(null);
     }
     
     public function getSalt()

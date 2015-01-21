@@ -16,13 +16,15 @@ class user2Type extends AbstractType
     {
         $builder
             ->add('username')
-            ->add('password', 'repeated', array(
+            ->add('plainpassword', 'repeated', array(
                     'type' => 'password',
                     'invalid_message' => 'The password fields must match.',
                     'required' => false,
                     'first_options'  => array('label' => 'Password'),
                     'second_options' => array('label' => 'Repeat Password')
-            ));
+            ))
+            ->add('email')
+            ;
     }
     
     /**
