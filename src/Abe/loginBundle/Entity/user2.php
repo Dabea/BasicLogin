@@ -74,8 +74,9 @@ class user2 implements UserInterface, \Serializable
      */
     public function setUsername($username)
     {
+        if(!is_null($password)){
         $this->username = $username;
-    
+        }
         return $this;
     }
 
