@@ -59,7 +59,6 @@ class user2Controller extends Controller
             $data = $form->getData();
             $entity->setUsername($data->getUsername());
             $entity->setPassword($this->encodePassword($entity, $data->getPassword()));
-            
             $entityManager = $this->getDoctrine()->getManager();
             $defaultRole = $entityManager->getRepository('AbeloginBundle:Role')->find(1);
             $entity->addRole($defaultRole);
@@ -219,6 +218,7 @@ class user2Controller extends Controller
 
         if ($editForm->isValid()) {
             $data = $editForm->getData();
+            $pass = $data->getPassword();
             $entity->setUsername($data->getUsername());
             $entity->setPassword($this->encodePassword($entity, $data->getPassword()));
             $em = $this->getDoctrine()->getManager();

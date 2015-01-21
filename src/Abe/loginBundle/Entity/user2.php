@@ -12,7 +12,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Abe\loginBundle\Entity\user2Repository")
- *  @UniqueEntity("username")
+ * @UniqueEntity("username")
+ * @UniqueEntity("email")
  */
 class user2 implements UserInterface, \Serializable
 {
@@ -35,10 +36,16 @@ class user2 implements UserInterface, \Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=255)
+     * @ORM\Column(name="password", type="string", nullable=false, length=255)
      */
     private $password;
-
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", nullable=true, length=255 )
+     */
+    private $email;
 
     /**
      * Get id
@@ -90,8 +97,9 @@ class user2 implements UserInterface, \Serializable
      */
     public function setPassword($password)
     {
+        if(!is_null($password)){
         $this->password = $password;
-    
+        }
         return $this;
     }
 
@@ -186,5 +194,28 @@ public function unserialize($serialized)
     public function isGranted($role)
     {
         return in_array($role, $this->getRoles());
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     * @return user2
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string 
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 }
