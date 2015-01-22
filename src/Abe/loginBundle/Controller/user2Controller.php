@@ -486,15 +486,15 @@ class user2Controller extends Controller
             
         $securityContext = $this->container->get('security.context');
         if ($securityContext->isGranted('ROLE_ADMIN')  || $securityContext->isGranted('ROLE_TEST')){
-            $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to remove admin status');
-            return $this->redirect($this->generateUrl('homepage'));
-        }else{
-
+           $entityManager = $this->getDoctrine()->getManager();
            $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(2);
            $entity->removeRole($adminRole);
            $em = $this->getDoctrine()->getManager();
            $em->persist($entity);
            $em->flush();
+        }else{
+            $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to remove admin status');
+            return $this->redirect($this->generateUrl('homepage'));
         }
 
         $rolecollection = $entity->getRoles();
@@ -508,3 +508,4 @@ class user2Controller extends Controller
   
     
 }
+ 
