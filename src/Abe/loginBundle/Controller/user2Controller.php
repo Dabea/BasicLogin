@@ -215,6 +215,7 @@ class user2Controller extends Controller
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
         $grantAdminForm = $this->createGrantAdminForm($id);
+        $rolecollection = $entity->getRoles();
 
         if ($editForm->isValid()) {
             $data = $editForm->getData();
@@ -234,6 +235,7 @@ class user2Controller extends Controller
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
+            'rolecollection'  => $rolecollection,
             'grantAdmin_form' => $grantAdminForm->createView(),
         );
     }
@@ -470,32 +472,39 @@ class user2Controller extends Controller
      *
      * @Route("/roles/{id}", name="main_user2_roles")
      * @Method("GET")
-     * @Template("AbeloginBundle:user2:permissions.html.twig")
+     * @Template()
      */
-    public function ChangeRoles(Request $request, $id)
+    public function ChangeRolesAction($id)
     {
-        $form = $this->createRolesForm($id);
-        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
 
-        if ($form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entity = $entityManager->getRepository('AbeloginBundle:user2')->find($id);
+        $entity = $em->getRepository('AbeloginBundle:user2')->find($id);
 
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find user2 entity.');
-            }
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find user2 entity.');
+        }
             
-            $securityContext = $this->container->get('security.context');
-            if (!$securityContext->isGranted('ROLE_ADMIN')){
-                $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to remove admin status');
-                return $this->redirect($this->generateUrl('homepage'));
-            }
-            
-            
+        $securityContext = $this->container->get('security.context');
+        if (!$securityContext->isGranted('ROLE_ADMIN')){
+            $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to remove admin status');
+            return $this->redirect($this->generateUrl('homepage'));
+        }else{
+
+           $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(2);
+           $entity->removeRole($adminRole);
+           $em = $this->getDoctrine()->getManager();
+           $em->persist($entity);
+           $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('main_user2'));
+        $rolecollection = $entity->getRoles();
+        $roleForm = $this->createRolesForm($id);
+            
+            return array(
+            'entity'          => $entity,
+            'Roles_form'      => $roleForm->createView()
+        );
     }
-    
+  
     
 }

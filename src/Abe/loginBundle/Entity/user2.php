@@ -124,21 +124,21 @@ class user2 implements UserInterface, \Serializable
     }
 
     /**
-     * Set plainpassword
+     * Set plainPassword
      *
      * @return string 
      * 
      */
-    public function setplainPassword($plainpassword)
+    public function setplainPassword($plainPassword)
     {
         
-        $this->plainpassword = $plainpassword;
+        $this->plainPassword = $plainPassword;
         
         return $this;
     }
 
     /**
-     * Get plainpassword
+     * Get plainPassword
      *
      * @return string 
      */

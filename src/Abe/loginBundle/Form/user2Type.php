@@ -16,7 +16,7 @@ class user2Type extends AbstractType
     {
         $builder
             ->add('username')
-            ->add('plainpassword', 'repeated', array(
+            ->add('plainPassword', 'repeated', array(
                     'type' => 'password',
                     'invalid_message' => 'The password fields must match.',
                     'required' => false,

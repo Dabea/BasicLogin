@@ -9,10 +9,10 @@ security:
         
 
     providers:
-        Database:
-            entity:  
-                class: AbeloginBundle:user2
-                property: username 
+        administrators: 
+            entity:  { class: AbeloginBundle:user2 }
+              #  class: AbeloginBundle:user2
+               # property: username 
     
         in_memory:
             memory:

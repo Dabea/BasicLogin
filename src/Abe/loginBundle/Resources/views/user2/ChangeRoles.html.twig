@@ -1,0 +1,20 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+
+    <div class="col-xs-4 col-xs-offset-4 well">
+        
+            {{ form_start(Roles_form) }}
+                {{ form_errors(Roles_form)}}
+                <div class="col-xs-6">
+                {{ form_label(Roles_form.Current_Roles, 'Current Roles') }}
+                {{ form_widget(Roles_form.Current_Roles, { 'attr': {'class': 'col-xs-6'} }) }}
+                </div>
+                <div class="col-xs-6">
+                {{ form_label(Roles_form.Current_Roles, 'Available Roles') }}
+                {{ form_widget(Roles_form.Aviable_Roles, { 'attr': {'class': 'col-xs-6'} }) }} 
+                </div>
+            {{ form_end(Roles_form) }}
+    </div>
+{% endblock %}
+

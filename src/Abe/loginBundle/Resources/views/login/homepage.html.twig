@@ -20,6 +20,7 @@
         <div class="panel-body">
             <p> You can edit the Sample Data here  <a class="btn btn-success  btn-sm pull-right" href="{{ path('main_users') }}"> Edit</a>  </p>
             <p> You can edit your of the info here  <a class="btn btn-warning  btn-sm pull-right" href="{{ path('main_user2_show', {id: app.user.id}) }}"> Edit</a>  </p>
+            <p> Change roles here  <a class="btn btn-warning  btn-sm pull-right" href="{{ path('main_user2_roles', {id: app.user.id}) }}"> Change Roles</a>  </p>
     {% if is_granted('ROLE_ADMIN') %}
             <p> Since you are an Admin you can change all the users data  <a class="btn btn-danger btn-sm  pull-right" href="{{ path('main_user2') }}"> Edit</a>  </p>
     {% endif %}
