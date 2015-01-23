@@ -442,10 +442,13 @@ class user2Controller extends Controller
      */
     private function createRolesForm($id)
     {
+    
+        //Put Logic in here to generate the Roles for the roles form and have the two lists compare against the other entity so 
+        // that if current roles has the value then it will not be in Aviable Roles
             $entityManager = $this->getDoctrine()->getManager();
             $roles = $entityManager->getRepository('AbeloginBundle:user2')->find($id);
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('main_user2_roles', array('id' => $id)))
+            ->setAction($this->generateUrl('main_user2_roles_update', array('id' => $id)))
             ->setMethod('PUT')
             ->add('Current_Roles', 'entity', array(
                 'class' => 'AbeloginBundle:user2',
@@ -468,7 +471,7 @@ class user2Controller extends Controller
     }
     
     /**
-     * Removes Admin status to a user2 entity.
+     * Displays a form to edit Roles in an existing user2 entity.
      *
      * @Route("/roles/{id}", name="main_user2_roles")
      * @Method("GET")
@@ -483,15 +486,67 @@ class user2Controller extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find user2 entity.');
         }
+        $rolecollection = $entity->getRoles();
+        $roleForm = $this->createRolesForm($id);
+        $editForm = $this->createEditForm($entity);
+        $deleteForm = $this->createDeleteForm($id);
+        $grantAdminForm = $this->createGrantAdminForm($id);
+        $removeAdminForm = $this->createRemoveAdminForm($id);
+
+        return array(
+            'entity'      => $entity,
+            'rolecollection'  => $rolecollection,
+            'Roles_form'      => $roleForm->createView(),
+            'edit_form'   => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+            'grantAdmin_form' => $grantAdminForm->createView(),
+            'removeAdmin_form' => $removeAdminForm->createView(),
+        );
+    }
+    
+    /**
+     * Updates Admin status to a user2 entity.
+     *
+     * @Route("/updateroles/{id}", name="main_user2_roles_update")
+     * @Method("PUT")
+     * @Template()
+     */
+    public function UpdateRolesAction(Request $request, $id)
+    {
+        $form = $this->createRolesForm($id);
+        $form->handleRequest($request);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AbeloginBundle:user2')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find user2 entity.');
+        }
             
         $securityContext = $this->container->get('security.context');
         if ($securityContext->isGranted('ROLE_ADMIN')  || $securityContext->isGranted('ROLE_TEST')){
+           $data = $form->get('Aviable_Roles')->getData();
+           
            $entityManager = $this->getDoctrine()->getManager();
-           $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(2);
-           $entity->removeRole($adminRole);
-           $em = $this->getDoctrine()->getManager();
-           $em->persist($entity);
-           $em->flush();
+           //$adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(2);
+
+           if ($form->isValid()) {
+                $newRoles = array();
+                foreach($data as $key =>$selectedRoles){
+                        $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(6);
+                        echo $selectedRoles . '<br>';
+                        $entity->addRole($adminRole);   
+                }
+                //exit(\Doctrine\Common\Util\Debug::dump($newRoles));
+           
+
+                //$entity->addRole($adminRole);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($entity);
+                $em->flush();
+                return $this->redirect($this->generateUrl('main_user2', array('id' => $id)));
+            }
         }else{
             $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to remove admin status');
             return $this->redirect($this->generateUrl('homepage'));
