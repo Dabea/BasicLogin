@@ -1,15 +1,15 @@
 {% extends '::base.html.twig' %}
 
-{% block body -%}
-    {% for flashMessage in app.session.flashbag.get('notice') %}
-        <div class="flash-notice alert alert-danger col-xs-4 col-xs-offset-4   row text-center">
-            {{ flashMessage }}
-        </div>S
-        <div>
+{% block body %}
+{% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="col-xs-12">
+            <div style="z-index: 1000" class="flash-notice alert alert-danger col-xs-5 col-xs-offset-4 clearfix clear row text-center">
+                {{ flashMessage }}
+            </div>
         </div>
         
         
-    {% endfor %}
+{% endfor %}
     
     <div style="float: none;  margin-left: auto; margin-right: auto; min-width:900px"  class="col-xs-8   well">
         <a class="btn btn-primary btn-xs pull-right" href="{{ path('logout2') }}"> Logout</a> 

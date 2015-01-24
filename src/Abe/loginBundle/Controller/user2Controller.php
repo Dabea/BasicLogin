@@ -459,7 +459,7 @@ class user2Controller extends Controller
             }
             $userAviableRoles = array_diff($aviableRoles ,$currnetRoles  );
             
-            //exit(\Doctrine\Common\Util\Debug::dump($nroles));
+            //exit(\Doctrine\Common\Util\Debug::dump($userAviableRoles));
             
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('main_user2_roles_update', array('id' => $id)))
@@ -477,7 +477,8 @@ class user2Controller extends Controller
                 'required'    => false,
                 'empty_data'  => null)
                 )                       
-            ->add('submit', 'submit', array('label' => 'Change Roles'))
+            ->add('add', 'submit', array('label' => 'Add Roles'))
+            ->add('remove', 'submit', array('label' => 'Remove Roles'))
             ->getForm()
         ;
     }
@@ -527,7 +528,7 @@ class user2Controller extends Controller
     {
         $form = $this->createRolesForm($id);
         $form->handleRequest($request);
-
+        
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AbeloginBundle:user2')->find($id);
@@ -537,27 +538,41 @@ class user2Controller extends Controller
         }
             
         $securityContext = $this->container->get('security.context');
-        if ($securityContext->isGranted('ROLE_ADMIN')  || $securityContext->isGranted('ROLE_TEST')){
+        if(($securityContext->isGranted('ROLE_ADMIN'))  || $securityContext->isGranted('ROLE_TEST')){
            $data = $form->get('Aviable_Roles')->getData();
-           
+           $curentdata = $form->get('Current_Roles')->getData();
            $entityManager = $this->getDoctrine()->getManager();
-           //$adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(2);
-
            if ($form->isValid()) {
-                $newRoles = array();
-                foreach($data as $key =>$selectedRoles){
-                        $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(6);
-                        echo $selectedRoles . '<br>';
-                        $entity->addRole($adminRole);   
+                if(!$securityContext->isGranted('ROLE_ADMIN')){
+                    $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to remove admin status');
+                    return $this->redirect($this->generateUrl('homepage'));
+                }else{
+                    if ($form->get('add')->isClicked()) {
+                        foreach($data as $key =>$selectedRoles){
+                                $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find($selectedRoles);
+                                echo $selectedRoles . '<br>';
+                                $entity->addRole($adminRole);
+                                $em->persist($entity);                        
+                        }
+                    }
+                    if ($form->get('remove')->isClicked()) {
+                        foreach($curentdata as $key =>$selectedRoles){
+                                $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find($selectedRoles);
+                                echo $selectedRoles . '<br>';
+                                if($selectedRoles != 0){
+                                    $entity->removeRole($adminRole);
+                                    $em->persist($entity);  
+                                }
+                                if(($selectedRoles == 0) && (sizeof($curentdata) <= 1) ){
+                                    $this->get('session')->getFlashBag()->add('notice', 'All users must have ROLE_USER');
+                                }elseif( ($selectedRoles == 0) && (sizeof($curentdata) > 1)){
+                                    $this->get('session')->getFlashBag()->add('notice', 'All users must have ROLE_USER But all other role changes were completed successfully');
+                                }
+                        }
+                    }
+                    $em->flush();
+                    return $this->redirect($this->generateUrl('main_user2', array('id' => $id)));
                 }
-                //exit(\Doctrine\Common\Util\Debug::dump($newRoles));
-           
-
-                //$entity->addRole($adminRole);
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($entity);
-                $em->flush();
-                return $this->redirect($this->generateUrl('main_user2', array('id' => $id)));
             }
         }else{
             $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to remove admin status');
