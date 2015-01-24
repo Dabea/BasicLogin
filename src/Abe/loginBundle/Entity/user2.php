@@ -252,4 +252,6 @@ public function unserialize($serialized)
     {
         return $this->email;
     }
+    
+    
 }

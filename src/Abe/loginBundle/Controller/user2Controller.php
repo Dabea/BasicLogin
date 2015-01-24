@@ -442,24 +442,36 @@ class user2Controller extends Controller
      */
     private function createRolesForm($id)
     {
-    
+        
         //Put Logic in here to generate the Roles for the roles form and have the two lists compare against the other entity so 
         // that if current roles has the value then it will not be in Aviable Roles
             $entityManager = $this->getDoctrine()->getManager();
             $roles = $entityManager->getRepository('AbeloginBundle:user2')->find($id);
+            $aviableRolesObj = $entityManager->getRepository('AbeloginBundle:Role')->findAll();
+            $aviableRoles = array();
+           foreach($aviableRolesObj as $name =>$value){
+               $aviableRoles [] .= $value;
+            }
+            $currnetRolesObj = $roles->getRoles();
+            $currnetRoles = array();
+            foreach($currnetRolesObj as $name =>$value){
+                $currnetRoles[] .= $value;
+            }
+            $userAviableRoles = array_diff($aviableRoles ,$currnetRoles  );
+            
+            //exit(\Doctrine\Common\Util\Debug::dump($nroles));
+            
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('main_user2_roles_update', array('id' => $id)))
             ->setMethod('PUT')
-            ->add('Current_Roles', 'entity', array(
-                'class' => 'AbeloginBundle:user2',
-                'choices' => $roles->getRoles(),
+            ->add('Current_Roles', 'choice', array(
+                'choices' => $currnetRoles,
                 'expanded' => false,
                 'multiple' => true,
                 'required'    => false,)
                 )
-            ->add('Aviable_Roles', 'entity', array(
-                'class' => 'AbeloginBundle:Role',
-                'choices' => $roles,
+            ->add('Aviable_Roles', 'choice', array(
+                'choices' => $userAviableRoles,
                 'expanded' => false,
                 'multiple' => true,
                 'required'    => false,
