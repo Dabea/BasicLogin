@@ -466,6 +466,7 @@ class user2Controller extends Controller
             ->setMethod('PUT')
             ->add('Current_Roles', 'choice', array(
                 'choices' => $currnetRoles,
+                'data' => $currnetRoles,
                 'expanded' => false,
                 'multiple' => true,
                 'required'    => false,)
@@ -530,9 +531,13 @@ class user2Controller extends Controller
         $form->handleRequest($request);
         
         $em = $this->getDoctrine()->getManager();
-
         $entity = $em->getRepository('AbeloginBundle:user2')->find($id);
-
+        $currentRoles = array();
+        $currentRolesObj = $entity->getRoles();
+        foreach($currentRolesObj as $name =>$value){
+                $currentRoles[] .= $value;
+            }
+        
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find user2 entity.');
         }
@@ -557,8 +562,10 @@ class user2Controller extends Controller
                     }
                     if ($form->get('remove')->isClicked()) {
                         foreach($curentdata as $key =>$selectedRoles){
-                                $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find($selectedRoles);
+                                
+                                $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->findOneByrole($currentRoles[$selectedRoles]);
                                 echo $selectedRoles . '<br>';
+                                //exit(\Doctrine\Common\Util\Debug::dump($currentRoles[$selectedRoles]));
                                 if($selectedRoles != 0){
                                     $entity->removeRole($adminRole);
                                     $em->persist($entity);  
@@ -578,7 +585,6 @@ class user2Controller extends Controller
             $this->get('session')->getFlashBag()->add('notice', 'You do not have enough access to remove admin status');
             return $this->redirect($this->generateUrl('homepage'));
         }
-
         $rolecollection = $entity->getRoles();
         $roleForm = $this->createRolesForm($id);
             

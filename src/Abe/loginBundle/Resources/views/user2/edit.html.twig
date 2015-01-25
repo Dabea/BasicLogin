@@ -31,9 +31,11 @@
                     {% endfor %}
                  {% if admin == true %}
                     <li>{{ form(removeAdmin_form) }}</li>
+                    
                 {% else %}
                     <li>{{ form(grantAdmin_form) }}</li>
                 {% endif %}
+                <li><a class="btn btn-warning  btn-sm pull-right" href="{{ path('main_user2_roles', {id: entity.id}) }}"> Change Roles</a></li>
             </ul>
         </div>
     </div>

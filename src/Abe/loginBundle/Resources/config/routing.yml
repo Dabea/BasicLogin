@@ -17,3 +17,7 @@ CRUD:
 CRUD2:
     resource: "@AbeloginBundle/Controller/user2Controller.php"
     type:     annotation 
+    
+File_upload:
+    resource: "@AbeFileUploadBundle/Controller/UploadController.php"
+    type:     annotation 

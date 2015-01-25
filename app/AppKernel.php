@@ -20,7 +20,7 @@ class AppKernel extends Kernel
             new Braincrafted\Bundle\BootstrapBundle\BraincraftedBootstrapBundle(),
             new Abe\UserBundle\UserBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
-            
+            new Abe\FileUploadBundle\AbeFileUploadBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

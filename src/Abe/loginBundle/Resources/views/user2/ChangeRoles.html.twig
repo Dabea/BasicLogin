@@ -1,9 +1,14 @@
 {% extends '::base.html.twig' %}
 
 {% block body %}
-
-    <div class="col-xs-4 col-xs-offset-4 well">
-        
+    
+<div class="col-xs-4 col-xs-offset-4">
+    <div class="panel panel-default" >
+        <div class="panel-heading">
+            <label class="text-center" > <strong >Change Roles </strong></label>
+        </div>
+        <div class="panel-body">
+        <a class="btn btn-primary btn-xs " href="{{ path('homepage') }}"> Home Page</a>
             {{ form_start(Roles_form) }}
                 {{ form_errors(Roles_form)}}
                 <div class="col-xs-6">
@@ -14,7 +19,14 @@
                 {{ form_label(Roles_form.Current_Roles, 'Available Roles') }}
                 {{ form_widget(Roles_form.Aviable_Roles, { 'attr': {'class': 'col-xs-6'} }) }} 
                 </div>
+                <div style="margin-right:15px" class="pull-right">
+                    {{ form_widget(Roles_form.add)  }} 
+                </div>
+                <div style="margin-left:15px">
+                    {{ form_widget(Roles_form.remove)  }} 
+                </div>
             {{ form_end(Roles_form) }}
-    </div>
+        </div>
+</div>
 {% endblock %}
 
