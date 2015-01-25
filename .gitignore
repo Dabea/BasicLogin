@@ -38,3 +38,6 @@
 
 #Demo bundle
 /src/Acme
+
+#FileUpdate
+/src/Abe/FileUploadBundle
