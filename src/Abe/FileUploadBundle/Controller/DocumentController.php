@@ -45,7 +45,7 @@ class DocumentController extends Controller
     public function createAction(Request $request)
     {
         $document = new Document();
-    $form = $this->createCreateForm($document);
+        $form = $this->createCreateForm($document);
     
     
     
@@ -56,7 +56,7 @@ class DocumentController extends Controller
             
             $em = $this->getDoctrine()->getEntityManager();
 
-            //$document->upload();
+            $document->upload();
             
             $em->persist($document);
             $em->flush();
@@ -135,86 +135,8 @@ class DocumentController extends Controller
         );
     }
 
-    /**
-     * Displays a form to edit an existing Document entity.
-     *
-     * @Route("/{id}/edit", name="document_edit")
-     * @Method("GET")
-     * @Template()
-     */
-    public function editAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AbeFileUploadBundle:Document')->find($id);
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Document entity.');
-        }
-
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
-    }
-
-    /**
-    * Creates a form to edit a Document entity.
-    *
-    * @param Document $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(Document $entity)
-    {
-        $form = $this->createForm(new DocumentType(), $entity, array(
-            'action' => $this->generateUrl('document_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
-        ));
-
-        $form
-            ->add('file' ,'file')
-            ->add('submit', 'submit', array('label' => 'Update'));
-
-        return $form;
-    }
-    /**
-     * Edits an existing Document entity.
-     *
-     * @Route("/{id}", name="document_update")
-     * @Method("PUT")
-     * @Template("AbeFileUploadBundle:Document:edit.html.twig")
-     */
-    public function updateAction(Request $request, $id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('AbeFileUploadBundle:Document')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Document entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isValid()) {
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('document_edit', array('id' => $id)));
-        }
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
-    }
     /**
      * Deletes a Document entity.
      *
@@ -258,29 +180,7 @@ class DocumentController extends Controller
         ;
     }
     
-    public function upload()
-{
-    // the file property can be empty if the field is not required
-    if (null === $this->getFile()) {
-        return;
-    }
-
-    // use the original file name here but you should
-    // sanitize it at least to avoid any security issues
-
-    // move takes the target directory and then the
-    // target filename to move to
-    $this->getFile()->move(
-        $this->getUploadRootDir(),
-        $this->getFile()->getClientOriginalName()
-    );
-
-    // set the path property to the filename where you've saved the file
-    $this->path = $this->getFile()->getClientOriginalName();
-
-    // clean up the file property as you won't need it anymore
-    $this->file = null;
-}
+    
 
     
     
