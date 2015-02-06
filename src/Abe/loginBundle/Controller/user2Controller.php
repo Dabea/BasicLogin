@@ -55,18 +55,25 @@ class user2Controller extends Controller
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if($form->isValid()) {
             $data = $form->getData();
             $entity->setUsername($data->getUsername());
-            $entity->setPassword($this->encodePassword($entity, $data->getPassword()));
+            $plainPassword = $data->getplainPassword();
+            $entity->setPassword($this->encodePassword($entity, $plainPassword));
             $entityManager = $this->getDoctrine()->getManager();
-            $defaultRole = $entityManager->getRepository('AbeloginBundle:Role')->find(1);
+            $defaultRole = $entityManager->getRepository('AbeloginBundle:Role')->find(0);
             $entity->addRole($defaultRole);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('main_user2_show', array('id' => $entity->getId())));
+            $entityManager->persist($entity);
+            //exit(\Doctrine\Common\Util\Debug::dump($data));
+            $entityManager->flush();
+            
+            $securityContext = $this->container->get('security.context');
+            if(!$securityContext->isGranted('ROLE_USER')) {
+                $this->get('session')->getFlashBag()->add('registered', 'Registration Successful Please Login');
+                return $this->redirect($this->generateUrl('login'));
+            }else{
+                //return $this->redirect($this->generateUrl('main_user2_show', array('id' => $entity->getId())));
+            }
         }
 
         return array(
@@ -309,20 +316,6 @@ class user2Controller extends Controller
         
         }
     }    
-    
-   /* public function grantAdmin() 
-    {
-        $securityContext = $this->container->get('security.context');
-        
-        if (!$securityContext->isGranted('ROLE_ADMIN')){
-                $entityManager = $this->getDoctrine()->getManager();
-                $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find(2);
-                $entity->addRole($adminRole);
-                
-        }
-    
-    }
-    */
      
     /**
      * Grants Admin status to a user2 entity.
@@ -445,20 +438,19 @@ class user2Controller extends Controller
         
         //Put Logic in here to generate the Roles for the roles form and have the two lists compare against the other entity so 
         // that if current roles has the value then it will not be in Aviable Roles
-            $entityManager = $this->getDoctrine()->getManager();
-            $roles = $entityManager->getRepository('AbeloginBundle:user2')->find($id);
-            $aviableRolesObj = $entityManager->getRepository('AbeloginBundle:Role')->findAll();
-            $aviableRoles = array();
-           foreach($aviableRolesObj as $name =>$value){
-               $aviableRoles [] .= $value;
-            }
-            $currnetRolesObj = $roles->getRoles();
-            $currnetRoles = array();
-            foreach($currnetRolesObj as $name =>$value){
-                $currnetRoles[] .= $value;
-            }
-            $userAviableRoles = array_diff($aviableRoles ,$currnetRoles  );
-            
+        $entityManager = $this->getDoctrine()->getManager();
+        $roles = $entityManager->getRepository('AbeloginBundle:user2')->find($id);
+        $aviableRolesObj = $entityManager->getRepository('AbeloginBundle:Role')->findAll();
+        $aviableRoles = array();
+        foreach($aviableRolesObj as $name =>$value){
+           $aviableRoles [] .= $value;
+        }
+        $currnetRolesObj = $roles->getRoles();
+        $currnetRoles = array();
+        foreach($currnetRolesObj as $name =>$value){
+            $currnetRoles[] .= $value;
+        }
+        $userAviableRoles = array_diff($aviableRoles ,$currnetRoles  );
             //exit(\Doctrine\Common\Util\Debug::dump($userAviableRoles));
             
         return $this->createFormBuilder()
@@ -494,7 +486,6 @@ class user2Controller extends Controller
     public function ChangeRolesAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-
         $entity = $em->getRepository('AbeloginBundle:user2')->find($id);
 
         if (!$entity) {
@@ -529,19 +520,17 @@ class user2Controller extends Controller
     {
         $form = $this->createRolesForm($id);
         $form->handleRequest($request);
-        
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AbeloginBundle:user2')->find($id);
+
         $currentRoles = array();
         $currentRolesObj = $entity->getRoles();
         foreach($currentRolesObj as $name =>$value){
                 $currentRoles[] .= $value;
             }
-        
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find user2 entity.');
-        }
-            
+        } 
         $securityContext = $this->container->get('security.context');
         if(($securityContext->isGranted('ROLE_ADMIN'))  || $securityContext->isGranted('ROLE_TEST')){
            $data = $form->get('Aviable_Roles')->getData();
@@ -555,27 +544,36 @@ class user2Controller extends Controller
                     if ($form->get('add')->isClicked()) {
                         foreach($data as $key =>$selectedRoles){
                                 $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->find($selectedRoles);
-                                echo $selectedRoles . '<br>';
                                 $entity->addRole($adminRole);
                                 $em->persist($entity);                        
                         }
                     }
-                    if ($form->get('remove')->isClicked()) {
-                        foreach($curentdata as $key =>$selectedRoles){
-                                
-                                $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->findOneByrole($currentRoles[$selectedRoles]);
-                                echo $selectedRoles . '<br>';
-                                //exit(\Doctrine\Common\Util\Debug::dump($currentRoles[$selectedRoles]));
-                                if($selectedRoles != 0){
-                                    $entity->removeRole($adminRole);
-                                    $em->persist($entity);  
-                                }
-                                if(($selectedRoles == 0) && (sizeof($curentdata) <= 1) ){
-                                    $this->get('session')->getFlashBag()->add('notice', 'All users must have ROLE_USER');
-                                }elseif( ($selectedRoles == 0) && (sizeof($curentdata) > 1)){
-                                    $this->get('session')->getFlashBag()->add('notice', 'All users must have ROLE_USER But all other role changes were completed successfully');
-                                }
-                        }
+                    if($form->get('remove')->isClicked()) {
+                        $CurrentUserObj = $this->getUser();
+                        $CurrentUserId = $CurrentUserObj->getId();
+                        
+                        
+                            foreach($curentdata as $key =>$selectedRoles){
+                                    $adminRole = $entityManager->getRepository('AbeloginBundle:Role')->findOneByrole($currentRoles[$selectedRoles]);
+                                    
+                                    if($CurrentUserId == $id){
+                                        if(($selectedRoles == 1) && (sizeof($curentdata) <= 1) ){
+                                            $this->get('session')->getFlashBag()->add('notice', 'You can not remove ROLE_ADMIN from your self');
+                                        }elseif( ($selectedRoles == 1) && (sizeof($curentdata) > 1)){
+                                            $this->get('session')->getFlashBag()->add('notice', 'You can not remove ROLE_ADMIN from your self But all other role changes were completed successfully');
+                                        }
+                                    }
+                                    if($selectedRoles != 0){
+                                        $entity->removeRole($adminRole);
+                                     $em->persist($entity);  
+                                    }
+                                    if(($selectedRoles == 0) && (sizeof($curentdata) <= 1) ){
+                                        $this->get('session')->getFlashBag()->add('notice', 'All users must have ROLE_USER');
+                                    }elseif( ($selectedRoles == 0) && (sizeof($curentdata) > 1)){
+                                        $this->get('session')->getFlashBag()->add('notice', 'All users must have ROLE_USER But all other role changes were completed successfully');
+                                    }
+                            }
+                        
                     }
                     $em->flush();
                     return $this->redirect($this->generateUrl('main_user2', array('id' => $id)));

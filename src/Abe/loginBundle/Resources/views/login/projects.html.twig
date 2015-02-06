@@ -1,0 +1,71 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="well well-lg col-xs-12 col-sm-4 col-sm-offset-4">
+        <h1 class="text-center">The Project Page </h1> 
+    </div>
+    
+    <div class="col-xs-12">
+    </div>
+    {% set panel_color = "" %}
+    {% set status_color = "" %}
+    {% set project_count = "1" %}
+    {% set project_position = "" %}
+    {% set last_row = "" %}
+    <div class="col-xs-12">
+
+    {% for entity in entities %}
+            {% if entity.status == "Not started" %}
+                {% set panel_color = 'panel panel-danger' %}
+                {% set status_color = 'panel text-danger' %}
+            {% elseif entity.status == "Introductory Stages" %}
+                {% set panel_color = "panel panel-info" %}
+                {% set status_color = "panel text-info" %}
+            {% elseif entity.status == "work in progress" %}
+                {% set panel_color = "panel panel-success" %}
+                {% set status_color = "panel text-success" %}
+            {% elseif entity.status == "Debuging"%}
+                {% set panel_color = "panel panel-warning" %}
+                {% set status_color = "panel text-warning" %}
+            {% elseif entity.status == "complete" %}
+                {% set panel_color = "panel-primary" %}
+                {% set status_color = "text-primary" %}
+            {% else %}
+                {% set panel_color = "panel-default" %}
+            {% endif %}
+
+            {% if loop.length - loop.index <= 4 %}
+                {% if project_count %}
+
+                {% endif %}
+            {% endif %}
+            
+            {% for entity in entities %}
+
+            {% endfor %}
+            
+            {% if entity.route == null %}
+                {% set link = "#" %}
+            {% else %}
+                {% set link =  path(entity.route)  %}
+            {% endif %}
+    <div  class="col-sm-3 clearfix project_position ">
+        <div class="panel {{panel_color}}">
+            <div class="panel-heading">
+                <h3 class="panel-title"> <a href="{{link}}">{{entity.name}} </a> </h3>
+            </div>
+            <div class="panel-body">
+               <p style="white-space:pre-wrap">{{entity.details}} </P>
+            
+             <p class="well {{status_color}}"> Status:{{entity.status}}</P> 
+            </div>
+        </div>
+    </div>
+
+        {% if  loop.index % 4  == 0 %}
+            </div>
+            <div class="col-xs-12">
+            {% set project_count = "1" %}
+        {% endif %}
+    {% endfor %}
+{% endblock %}

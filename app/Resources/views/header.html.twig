@@ -1,14 +1,14 @@
 <nav  class="navbar navbar-inverse navbar-fixed-top">
       
-        <div class="navbar-header col-xs-5 col-xs-push-5">
+        <div class="navbar-header col-sm-5 col-md-offset-5 col-sm-offset-3">
           <div>
           <a  class="navbar-brand" href="{{ path('homepage')}}">Home</a>
-          <a class="navbar-brand" href="#">Projects</a>
+          <a class="navbar-brand" href="{{ path('projects') }}">Projects</a>
           <a class="navbar-brand" href="#">About</a>
           </div>
           {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
             <a class="btn btn-primary  pull-right" href="{{ path('logout2') }}"> Logout</a>
-            <p style="margin-right:10px" class="pull-right h4 text-primary"> Loged in as {{app.user.username}} </p>
+            <p style="margin-right:10px" class="hidden-xs pull-right h4 text-primary"> Loged in as {{app.user.username}} </p>
           {% else %}
              <a class="btn btn-default  pull-right" href="{{ path('login') }}"> Login</a> 
          {% endif %}

@@ -11,7 +11,7 @@ use Symfony\Component\Debug\Debug;
 // Feel free to remove this, extend it, or make something more sophisticated.
 if (isset($_SERVER['HTTP_CLIENT_IP'])
     || isset($_SERVER['HTTP_X_FORWARDED_FOR'])
-    || !in_array(@$_SERVER['REMOTE_ADDR'], array('127.0.0.1', 'fe80::1', '71.195.47.109', '216.17.68.195', '75.73.246.166', '66.87.144.129', '::1'))
+    || !in_array(@$_SERVER['REMOTE_ADDR'], array('127.0.0.1', 'fe80::1', '71.195.47.109', '216.17.68.195', '75.73.246.166', '66.87.145.72', '::1'))
 ) {
     header('HTTP/1.0 403 Forbidden');
     exit('You are not allowed to access this file. Check '.basename(__FILE__).' for more information.');

@@ -1,5 +1,5 @@
 security:
-    always_authenticate_before_granting:
+    always_authenticate_before_granting: true
     
     encoders:
         Abe\loginBundle\Entity\user2: bcrypt
@@ -39,7 +39,7 @@ security:
 
     access_control:
         - { path: ^/main/user2/new , roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/main , roles: ROLE_USER }
+       # - { path: ^/main , roles: ROLE_USER }
         
         
         

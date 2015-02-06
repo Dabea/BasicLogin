@@ -7,8 +7,17 @@
 {% endif %}
 
 
+{% for flashMessage in app.session.flashbag.get('registered') %}
+        <div col-xs-12>
+        <div class="flash-notice alert alert-success col-xs-4 col-xs-offset-4  text-center">
+            {{ flashMessage }}
+        </div>
+        </div>
+{% endfor %}
+
 </div>
-<div class="col-xs-2 col-xs-push-5 well">
+<div class="col-xs-2 col-xs-offset-5 well">
+
 <form class="form-horizontal" action="{{ path('BlackMagic') }}" method="post">
     <H1 class="text-center" > Sign In </H1>
     <h1>  </h1>
@@ -19,6 +28,9 @@
     <div  class="form-group" >
        
         <div class="col-xs-12"><input class="form-control" placeholder="Enter Password" type="password" id="password" name="_password" /></div>
+    </div>
+    <div>
+        <a href="{{ path('main_user2_new') }}" >Register</a>
     </div>
     <div>
         <button class="btn btn-primary btn-lg pull-right" type="submit">login</button>

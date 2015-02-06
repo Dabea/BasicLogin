@@ -1,10 +1,12 @@
 <?php
 
 namespace Abe\loginBundle\Controller;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Abe\loginBundle\Form\user2Type;
+use Abe\loginBundle\Entity\user2;
+use Abe\loginBundle\Entity\projects;
 use Abe\loginBundle\Form\UsersType;
 use Abe\loginBundle\Entity\Users;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,8 +38,6 @@ class loginController extends Controller
         // last username entered by the user
         $lastUsername = (null === $session) ? '' : $session->get(SecurityContext::LAST_USERNAME);
 
-        
-    
         $user = new Users;
         $form = $this->createFormBuilder($user)
             ->add('username' , 'text')
@@ -69,14 +69,15 @@ class loginController extends Controller
     }
 
     /**
-     * @Route("/register")
+     * @Route("/register", name="register")
      * @Template()
      */
     public function registerAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $user = new Users;
-        $form = $this->createForm(new UsersType(), $user);
+        $user = new user2();
+        $form = $this->createForm(new user2Type(), $user);
+         $form->add('submit', 'submit', array('label' => 'Blah'));
          $form->handleRequest($request);
         if($form->isValid()){
             $em->persist($user);
@@ -113,12 +114,28 @@ class loginController extends Controller
         //caught by secury componet in symfony
     }
     
-        /**
+    
+     /**
     * @Route("homepage" , name = "homepage")
     */
     public function homepageAction()
     {
         return $this->render('AbeloginBundle:login:homepage.html.twig');
     }
+    
+    /**
+    * @Route("main/projects" , name = "projects")
+    */
+    public function projectseAction()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $entities = $entityManager->getRepository('Abe\loginBundle\Entity\projects')->findAll();
+    
+        return $this->render('AbeloginBundle:login:projects.html.twig' , array(
+            'entities' => $entities,
+        ));
+    }
+    
+  
 
 }

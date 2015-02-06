@@ -4,7 +4,7 @@
     <div class="col-xs-4 col-xs-push-4"> 
     <div class="panel panel-default ">
         <div class="panel-heading text-center"
-          <lable> <strong> user2 creation</strong> </label>
+          <lable> <strong> User Registration</strong> </label>
         </div>
         <div class=" panel-body">
 
@@ -12,11 +12,13 @@
                
 
             <ul class="record_actions">
+                {% if is_granted('ROLE_USER') %}
                 <li>
                     <a href="{{ path('main_user2') }}">
                         Back to the list
                     </a>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>
