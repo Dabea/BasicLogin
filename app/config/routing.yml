@@ -1,3 +1,7 @@
+abe_email_mtg:
+    resource: "@AbeEmailMTGBundle/Resources/config/routing.yml"
+    prefix:   /
+
 abe_file_upload:
     resource: "@AbeFileUploadBundle/Resources/config/routing.yml"
     prefix:   /

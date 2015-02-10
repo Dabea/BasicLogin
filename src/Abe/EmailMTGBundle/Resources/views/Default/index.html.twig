@@ -1,0 +1,48 @@
+{% extends '::basic.html.twig' %}
+
+{% block body %}
+
+
+<div class="col-sm-8">
+    <span class=" col-xs-12">Hello this is the email MTG page!</span>
+    <div class="col-sm-12">
+        <table class="records_list table table-striped table-bordered ">
+            <thead>
+                <tr>
+                    <th>From </th>
+                    <th>Reviced </th>
+                    <th>Subject </th>
+                    <th>Department </th>
+                    <th>Assigned</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+                {% for entity in entities %}
+                    <tr>
+                        <td> {{ entity.sender }} </td>
+                        <td>  </td>
+                        <td> {{ entity.header }} </td>
+                        <td>somedata </td>
+                        <td>more data </td>
+                      
+            
+                    </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
+    </div>
+<div>
+   
+    <div class="col-sm-7">
+         <span class="col-sm-12" >Emails </span>
+        <input  type="text">
+    </div>
+    <div class="col-sm-5" >
+        <span class="col-sm-12" >Agents</span>
+        <input  type="text">
+    </div>
+</div>
+</div>
+{% endblock %}

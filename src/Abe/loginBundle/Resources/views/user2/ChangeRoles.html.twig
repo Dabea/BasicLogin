@@ -1,6 +1,11 @@
 {% extends '::base.html.twig' %}
 
 {% block body %}
+{% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-notice alert alert-danger col-xs-5 col-xs-offset-4   row text-center">
+            {{ flashMessage }}
+        </div>
+{% endfor %}
     
 <div class="col-xs-4 col-xs-offset-4">
     <div class="panel panel-default" >

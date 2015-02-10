@@ -576,7 +576,7 @@ class user2Controller extends Controller
                         
                     }
                     $em->flush();
-                    return $this->redirect($this->generateUrl('main_user2', array('id' => $id)));
+                    return $this->redirect($this->generateUrl('main_user2_roles', array('id' => $id)));
                 }
             }
         }else{

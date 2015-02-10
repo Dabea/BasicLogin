@@ -253,5 +253,9 @@ public function unserialize($serialized)
         return $this->email;
     }
     
+    public function __toString()
+{
+    return (string) $this->getUsername();
+}
     
 }

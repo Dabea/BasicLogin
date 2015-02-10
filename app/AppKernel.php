@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new Abe\UserBundle\UserBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Abe\FileUploadBundle\AbeFileUploadBundle(),
+            new Abe\EmailMTGBundle\AbeEmailMTGBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

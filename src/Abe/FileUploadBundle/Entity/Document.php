@@ -51,14 +51,14 @@ class Document
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="path", type="string", length=255)
+     * @ORM\Column(name="path", type="string", length=255 )
      */
     private $path;
 
@@ -152,16 +152,22 @@ class Document
      * @ORM\PostPersist()
      * @ORM\PostUpdate()
      */
-    public function upload()
+    public function upload($userFolder)
     {
         if (null === $this->getFile()) {
             return;
         }
-
+        $location = $this->getUploadRootDir()   . '/' . $userFolder;
+         
+        $extension = $this->getFile->guessExtension();
+        if (!$extension) {
+            // extension cannot be guessed
+                $extension = 'bin';
+        }
         // if there is an error when moving the file, an exception will
         // be automatically thrown by move(). This will properly prevent
         // the entity from being persisted to the database on error
-        $this->getFile()->move($this->getUploadRootDir(), $this->path);
+        $this->getFile()->move($location, $this->path . '.' . $extension );
 
         // check if we have an old image
         if (isset($this->temp)) {

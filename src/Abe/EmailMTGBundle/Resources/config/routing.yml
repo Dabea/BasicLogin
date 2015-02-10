@@ -1,0 +1,7 @@
+abe_email_mtg_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: AbeEmailMTGBundle:Default:index }
+
+File_document:
+    resource: "@AbeEmailMTGBundle/Controller/DefaultController.php"
+    type:     annotation 

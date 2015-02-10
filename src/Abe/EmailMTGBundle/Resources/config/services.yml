@@ -1,0 +1,7 @@
+parameters:
+#    abe_email_mtg.example.class: Abe\EmailMTGBundle\Example
+
+services:
+#    abe_email_mtg.example:
+#        class: %abe_email_mtg.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

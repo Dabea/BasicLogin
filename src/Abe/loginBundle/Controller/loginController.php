@@ -136,6 +136,13 @@ class loginController extends Controller
         ));
     }
     
+    /**
+    * @Route("/main/cv" , name = "resume")
+    */
+    public function displayCvAction()
+    {
+        return $this->render('AbeloginBundle:Cv:cv.html.twig');
+    }
   
 
 }
