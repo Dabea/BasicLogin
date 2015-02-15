@@ -3,31 +3,27 @@
 {% block body %}
 
 
-<div class="col-sm-8">
+<div class="col-sm-8 col-sm-offset-2">
     <span class=" col-xs-12">Hello this is the email MTG page!</span>
     <div class="col-sm-12">
         <table class="records_list table table-striped table-bordered ">
             <thead>
                 <tr>
-                    <th>From </th>
-                    <th>Reviced </th>
-                    <th>Subject </th>
-                    <th>Department </th>
-                    <th>Assigned</th>
+                    <th class="col-sm-2">From </th>
+                    <th class="col-sm-2">Reviced </th>
+                    <th class="col-sm-4">Subject </th>
+                    <th class="col-sm-2">Size</th>
                 </tr>
             </thead>
             <tbody>
-            
-                {% for entity in entities %}
-                    <tr>
-                        <td> {{ entity.sender }} </td>
-                        <td>  </td>
-                        <td> {{ entity.header }} </td>
-                        <td>somedata </td>
-                        <td>more data </td>
-                      
-            
+                {% for email in emails %}
+                     <tr>
+                        <td> {{ email.0.from }} </td>
+                        <td> {{ email.0.date|date('d/m/Y g:ia') }} </td>
+                        <td> {{ email.0.subject }} </td>
+                        <td> {{ email.0.size }} </td>
                     </tr>
+                   
                 {% endfor %}
                 
             </tbody>
